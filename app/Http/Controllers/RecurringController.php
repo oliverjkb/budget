@@ -33,7 +33,7 @@ class RecurringController extends Controller {
     public function store(Request $request) {
         $request->validate([
             'day' => array('required',
-		                   'regex:/\b(0?[1-9]|[12][0-9]|3[01])\b/',
+                           'regex:/\b(0?[1-9]|[12][0-9]|3[01])\b/',
 		       	          ),
             'end' => 'nullable|date|date_format:Y-m-d',
             'tag' => 'nullable|exists:tags,id', // TODO CHECK IF TAG BELONGS TO USER
