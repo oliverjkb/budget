@@ -1,10 +1,5 @@
-[![GitHub issues](https://img.shields.io/github/issues/range-of-motion/budget.svg)](https://github.com/range-of-motion/budget/issues)
-[![GitHub stars](https://img.shields.io/github/stars/range-of-motion/budget.svg)](https://github.com/range-of-motion/budget/stargazers)
-[![GitHub license](https://img.shields.io/github/license/range-of-motion/budget.svg)](https://github.com/range-of-motion/budget/blob/master/LICENSE)
 
 # Budget
-
-https://budget.pixely.me
 
 Budget is an open-source web application that helps you keep track of your finances.
 
@@ -29,13 +24,10 @@ php artisan storage:link
 
 php artisan migrate
 
+yarn add --dev @fortawesome/fontawesome-free
 yarn run development
 
 php artisan serve
 
 php artisan queue:work
 ```
-
-## Contact
-
-* [Discord](https://discord.gg/QFQdvy3)
