@@ -31,3 +31,17 @@ php artisan serve
 
 php artisan queue:work
 ```
+
+## Setting up Example data 
+
+If you wish to add some data to see how budget ticks, you can easily add some by running
+
+```
+php artisan db:seed
+```
+
+If you like how everything works, but want to start with a fresh install, you can reset the application by running 
+```
+php artisan migrate:fresh
+```
+This will leave you with a clean budget install, ready to be served.

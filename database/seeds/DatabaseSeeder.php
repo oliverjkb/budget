@@ -8,15 +8,15 @@ class DatabaseSeeder extends Seeder {
 
         // User
         $user = \App\User::create([
-            'name' => 'Daan',
-            'email' => 'daniel@pixely.me',
-            'password' => '$2y$12$eQ4s9CL8xg7Y6PoGNY4xuehr.d2u0e0VJ5CywkwqtQoyy/ntoP.pO' // hoi
+            'name' => 'Demo',
+            'email' => 'demo@example.com',
+            'password' => '$2y$10$Uv55v7f1V4HR6fFupy8RxOhC54wMFx.jToF/S7jvKqPh7XpO8hOae' // demopass
         ]);
 
         // Space
         $space = \App\Space::create([
             'currency_id' => 1,
-            'name' => 'Daan\'s Space'
+            'name' => 'Demo Space'
         ]);
 
         $user->spaces()->attach($space);
