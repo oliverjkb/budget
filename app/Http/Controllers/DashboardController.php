@@ -18,7 +18,7 @@ class DashboardController extends Controller {
         $currentMonth = date('m');
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
 
-        $balance = session('space')->monthlyBalance($currentYear, $currentMonth);
+        $balance = session('space')->totalBalance();
         $recurrings = session('space')->monthlyRecurrings($currentYear, $currentMonth);
         $leftToSpend = $balance - $recurrings;
 
