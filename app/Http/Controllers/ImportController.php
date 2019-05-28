@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
+use App\Earning;
+use Illuminate\Support\Carbon;
 
 class ImportController extends Controller {
     public function index() {
@@ -22,17 +24,19 @@ class ImportController extends Controller {
 
     public function store(Request $request) {
         $request->validate([
-            'name' => 'required|max:255',
-            'file' => 'required|max:200' // TODO VALIDATE CSV
+            'name'          => 'required|max:255',
+            'file'          => 'required|max:200', // TODO VALIDATE CSV
+            'delimiter'     => 'required'
         ]);
 
         $path = $request->file('file')->store('imports');
         $pathParts = explode('/', $path);
 
         Import::create([
-            'space_id' => session('space')->id,
-            'name' => $request->input('name'),
-            'file' => end($pathParts)
+            'space_id'      => session('space')->id,
+            'name'          => $request->input('name'),
+            'file'          => end($pathParts),
+            'delimiter'     => $request->input('delimiter'),
         ]);
 
         return redirect()->route('imports.index');
@@ -44,7 +48,7 @@ class ImportController extends Controller {
         $headers = [];
 
         $file = fopen(storage_path('app/imports/' . $import->file), 'r');
-        $firstRow = fgetcsv($file, 999, ',');
+        $firstRow = fgetcsv($file, 999, $import->delimiter);
 
         foreach ($firstRow as $column) {
             $headers[] = $column;
@@ -84,7 +88,8 @@ class ImportController extends Controller {
         $heading = true;
         $rows = [];
 
-        while ($row = fgetcsv($file, 999, ',')) {
+        while ($row = fgetcsv($file, 999, $import->delimiter)) 
+        {
             if (!$heading) {
                 $rows[] = [
                     'happened_on' => $row[$import->column_happened_on],
@@ -99,7 +104,8 @@ class ImportController extends Controller {
         return view('imports.complete', compact('tags', 'rows'));
     }
 
-    public function postComplete(Request $request, Import $import) {
+    public function postComplete(Request $request, Import $import) 
+    {
         $this->authorize('modify', $import);
 
         $request->validate([
@@ -110,13 +116,14 @@ class ImportController extends Controller {
 
         $errors = [];
 
-        foreach ($request->input('rows') as $i => $row) {
+        foreach ($request->input('rows') as $i => $row) 
+        {
             if (isset($row['import']) && $row['import'] == 'on') {
                 $validator = Validator::make($row, [
                     'tag_id' => 'nullable|exists:tags,id', // TODO CHECK IF TAG BELONGS TO USER
                     'happened_on' => 'date|date_format:' . $date_format,
                     'description' => 'max:255',
-                    'amount' => 'regex:/^\d*([\,\.]\d{2})?$/'
+                    'amount' => 'regex:/^-?(\d{1,3}[\,\.])*(\d{2})?/'
                 ]);
 
                 if ($validator->fails()) {
@@ -127,25 +134,50 @@ class ImportController extends Controller {
             }
         }
 
-        if ($errors) {
+        if ($errors) 
+        {
             $request->flash();
 
             return redirect()->route('imports.complete', ['id' => $import->id])->withErrors($errors);
         }
 
-        foreach ($request->input('rows') as $row) {
+        foreach ($request->input('rows') as $row) 
+        {
             if (isset($row['import'])) {
                 // TODO CHECK HOW THIS WORKS WITH 1k+ AMOUNTS
-                $amount = str_replace(',', '.', $row['amount']);
+                if (true) // thousands delimiter is "."
+                {
+                    $amount = str_replace('.', '', $row['amount']);
+                }
+                else // thousands delimiter is some other sign?
+                {
+                    // check if something else needs to be replaced here.
+                }
 
-                Spending::create([
-                    'space_id' => session('space')->id,
-                    'import_id' => $import->id,
-                    'tag_id' => $row['tag_id'],
-                    'happened_on' => $row['happened_on'],
-                    'description' => $row['description'],
-                    'amount' => (int) ($amount * 100)
-                ]);
+                $amount = (int) (str_replace(',', '.', $amount) * 100); //convert to integer here to use gmp_sign()
+
+                if (gmp_sign($amount) === -1)
+                {
+                    Spending::create([
+                        'space_id'      => session('space')->id,
+                        'import_id'     => $import->id,
+                        'tag_id'        => $row['tag_id'],
+                        'happened_on'   => Carbon::createFromFormat($date_format, $row['happened_on'])->toDateString(),
+                        'description'   => $row['description'],
+                        'amount'        => gmp_strval(gmp_abs($amount)),
+                    ]);
+                }
+                else
+                {
+                    Earning::create([
+                        'space_id'      => session('space')->id,
+                        'import_id'     => $import->id,
+                        //'tag_id'        => $row['tag_id'],
+                        'happened_on'   => Carbon::createFromFormat($date_format, $row['happened_on'])->toDateString(),
+                        'description'   => $row['description'],
+                        'amount'        => gmp_strval(gmp_abs($amount)),       
+                    ]);
+                }   
             }
         }
 
@@ -156,8 +188,10 @@ class ImportController extends Controller {
         return redirect()->route('imports.index');
     }
 
-    public function destroy(Request $request, Import $import) {
-        if (!$import->spendings->count()) {
+    public function destroy(Request $request, Import $import) 
+    {
+        if (!$import->spendings->count()) 
+        {
             $import->delete();
         }
 
