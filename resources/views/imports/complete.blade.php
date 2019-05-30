@@ -15,6 +15,7 @@
                             <option value="Y-m-d" {{ old('date_format') == 'Y-m-d' ? 'selected' : '' }}>YYYY-MM-DD</option>
                             <option value="Y/m/d" {{ old('date_format') == 'Y/m/d' ? 'selected' : '' }}>YYYY/MM/DD</option>
                             <option value="Ymd" {{ old('date_format') == 'Ymd' ? 'selected' : '' }}>YYYYMMDD</option>
+                            <option value="d.m.Y" {{ old('date_format') == 'd.m.Y' ? 'selected' : '' }}>DD.MM.YYYY</option>
                         </select>
                     </div>
                 </div>

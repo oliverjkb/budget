@@ -10,9 +10,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Earning extends Model {
     use SoftDeletes;
 
-    protected $dates = ['deleted_at'];
+    protected $dates = [
+        'deleted_at',
+    ];
 
-    protected $fillable = ['happened_on', 'description', 'amount'];
+    protected $fillable = [
+        'space_id',
+        'happened_on', 
+        'description', 
+        'amount'];
 
     protected $dispatchesEvents = [
         'created' => TransactionCreated::class,

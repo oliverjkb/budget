@@ -70,4 +70,21 @@ class Space extends Model {
 
         return $query->amount;
     }
+
+    public function totalBalance()
+    {
+        $query = DB::selectOne('
+            SELECT (
+                SELECT SUM(amount) 
+                FROM earnings
+                WHERE space_id = :e_space_id
+            ) - (
+                SELECT SUM(amount) 
+                FROM spendings
+                WHERE space_id = :s_space_id
+            ) AS balance;
+        ', ['e_space_id' => $this->id, 's_space_id' => $this->id,]);
+
+        return $query->balance;
+    }
 }

@@ -17,7 +17,8 @@ class Import extends Model {
         'status',
         'column_happened_on',
         'column_description',
-        'column_amount'
+        'column_amount',
+        'delimiter',
     ];
 
     protected $dispatchesEvents = [
