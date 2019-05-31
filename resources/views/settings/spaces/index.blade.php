@@ -6,6 +6,7 @@
 @endsection
 
 @section('settings_body')
+    <a href="/settings/spaces/new" class="button mb-1">{{ __('actions.create')}} {{ __('models.space') }}</a>
     <div class="box">
         <ul class="box__section">
             @foreach ($spaces as $space)

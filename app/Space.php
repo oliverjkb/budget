@@ -11,6 +11,11 @@ class Space extends Model {
 
     protected $dates = ['deleted_at'];
 
+    protected $fillable = [
+        'name',
+        'currency_id',
+    ];
+
     // Relations
     public function users() {
         return $this->belongsToMany(User::class, 'user_space');

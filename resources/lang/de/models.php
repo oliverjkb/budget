@@ -14,5 +14,8 @@ return [
     'spending' => 'Ausgabe',
 
     'imports' => 'Imports',
-    'import' => 'Import'
+    'import' => 'Import',
+
+    'spaces' => 'Spaces',
+    'space' => 'Space',
 ];

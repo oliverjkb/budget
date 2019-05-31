@@ -82,6 +82,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/settings/account', 'SettingsController@getAccount')->name('account');
         Route::get('/settings/preferences', 'SettingsController@getPreferences')->name('preferences');
         Route::get('/settings/spaces', 'SettingsController@getSpaces')->name('spaces.index');
+        Route::post('/settings/spaces', 'SpaceController@store')->name('spaces.store');
+        Route::get('/settings/spaces/new', 'SpaceController@create')->name('spaces.create');
     });
 
     Route::get('/spaces/{id}', 'SpaceController');
