@@ -3,12 +3,14 @@
 
 Budget is an open-source web application that helps you keep track of your finances.
 
-![Product](https://user-images.githubusercontent.com/9268822/46098425-a8877300-c1c4-11e8-9293-f43ceb9d6f97.png)
+![Product](https://oliverjakobi.com/budget_dashboard.png)
 
 ## Features
 
 * Ability to organize spendings using tags
-* Dashboard displaying monthly statistics about your spendings
+* Keep track of multiple Spaces (Accounts, Wallet, Savings, etc.)
+* Import transactions from .csv reports
+* Dashboard displaying monthly statistics about your spendings and categories
 * Available in multiple languages (English, Dutch, Danish, German)
 
 ## Installation
