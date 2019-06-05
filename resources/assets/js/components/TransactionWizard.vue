@@ -9,8 +9,12 @@
                 class="bg__button"
                 :class="{ 'bg__button--active': type == 'spending' }"
                 @click="switchType('spending')">Spending</button>
+            <button
+                class="bg__button"
+                :class="{ 'bg__button--active': type == 'transfer' }"
+                @click="switchType('transfer')">Transfer</button>
         </div>
-        <div class="input" v-if="type == 'spending'">
+        <div class="input" v-if="type != 'earning'">
             <label>Tag</label>
             <searchable
                 name="tag"
@@ -35,24 +39,32 @@
             <input type="text" v-model="amount" />
             <validation-error v-if="errors.amount" :message="errors.amount"></validation-error>
         </div>
-        <div v-if="type == 'spending'">
+        <div class="input" v-if="type == 'transfer'">
+            <label>Space</label>
+            <searchable
+                name="space"
+                :items="spaces"
+                @SelectUpdated="spaceUpdated"></searchable>
+            <validation-error v-if="errors.space_id" :message="errors.space_id"></validation-error>
+        </div>
+        <div v-if="type != 'earning'">
             <div class="input row">
                 <div class="row__column row__column--compact mr-1">
                     <input type="checkbox" id="test" v-model="isRecurring" />
                 </div>
                 <div class="row__column">
-                    <label for="test">This is a recurring spending&mdash;create it for me in the future</label>
+                    <label for="test">This is a recurring transaction, create it for me in the future</label>
                 </div>
             </div>
             <div v-if="isRecurring">
                 <div class="input">
-                    <label>How long will this spending go on for?</label>
+                    <label>How long will this transfer occur?</label>
                     <div class="row">
                         <div class="row__column row__column--compact mr-1">
                             <input id="noEnd" type="radio" v-model="recurringEnd" value="forever" />
                         </div>
                         <div class="row__column">
-                            <label for="noEnd">Forever :(</label>
+                            <label for="noEnd">Forever!</label>
                         </div>
                     </div>
                     <div class="row">
@@ -85,7 +97,10 @@
 
 <script>
     export default {
-        props: ['tags'],
+        props: [
+            'tags', 
+            'spaces'
+        ],
 
         data() {
             return {
@@ -93,6 +108,7 @@
                 errors: [],
 
                 tag: null,
+                space: null,
                 date: this.getTodaysDate(),
                 description: '',
                 amount: '10.00',
@@ -124,6 +140,10 @@
 
             tagUpdated(payload) {
                 this.tag = payload.key
+            },
+
+            spaceUpdated(payload) {
+                this.space = payload.key
             },
 
             getTodaysDate() {

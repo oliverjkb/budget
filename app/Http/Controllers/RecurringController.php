@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Recurring;
 use Auth;
+use App\Jobs\ProcessRecurrings;
 
 class RecurringController extends Controller {
     public function index() {
@@ -55,6 +56,7 @@ class RecurringController extends Controller {
         $recurring->amount = (int) ($request->input('amount') * 100);
 
         $recurring->save();
+        ProcessRecurrings::dispatch();
 
         return redirect()->route('recurrings.show', ['id' => $recurring->id]);
     }
