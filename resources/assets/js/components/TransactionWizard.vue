@@ -160,7 +160,32 @@
                 if (!this.loading) {
                     this.loading = true
 
-                    if (this.type == 'spending' && this.isRecurring) { // It's a recurring
+                    if (this.type == 'transfer') 
+                    {
+                        let body = {
+                            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            date:    this.date,
+                            description: this.description,
+                            amount: this.amount
+                        }
+
+                        if (this.tag)
+                        {
+                            body.tag_id = this.tag
+                        }
+
+                        if (this.space)
+                        {
+                            body.space_id = this.space
+                        }
+
+                        axios.post('/transfers', body).then(response => {
+                            this.handleSuccess()
+                        }).catch(error => {
+                            this.handleErrors(error.response)
+                        })
+                    }
+                    else if (this.type == 'spending' && this.isRecurring) { // It's a recurring
                         let body = {
                             _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                             day: this.date.slice(-2),

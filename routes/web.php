@@ -41,6 +41,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/spendings/{id}/restore', 'SpendingController@restore');
     });
 
+    Route::name('transfers')->group(function () {
+        Route::post('/transfers', 'TransferController@store');
+    });
+
     Route::resource('/recurrings', 'RecurringController')->only([
         'index',
         'create',
